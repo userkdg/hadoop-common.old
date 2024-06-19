@@ -16,28 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.hadoop.fs.azurebfs.services;
+package org.apache.hadoop.yarn.server.nodemanager.containermanager.linux.resources;
+
+import static org.apache.hadoop.yarn.conf.YarnConfiguration.DEFAULT_NM_RESOURCE_PLUGINS_FAIL_FAST;
+import static org.apache.hadoop.yarn.conf.YarnConfiguration.NM_RESOURCE_PLUGINS_FAIL_FAST;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.yarn.exceptions.YarnException;
 
 /**
- * The REST operation type (Read, Append, Other ).
+ * Small utility class which only re-throws YarnException if
+ * NM_RESOURCE_PLUGINS_FAIL_FAST property is true.
+ *
  */
-public enum AbfsRestOperationType {
-    CreateFileSystem,
-    GetFileSystemProperties,
-    SetFileSystemProperties,
-    ListPaths,
-    DeleteFileSystem,
-    CreatePath,
-    RenamePath,
-    GetAcl,
-    GetPathProperties,
-    GetPathStatus,
-    SetAcl,
-    SetOwner,
-    SetPathProperties,
-    SetPermissions,
-    Append,
-    Flush,
-    ReadFile,
-    DeletePath
+public final class ResourcesExceptionUtil {
+  private ResourcesExceptionUtil() {}
+
+  public static void throwIfNecessary(YarnException e, Configuration conf)
+      throws YarnException {
+    if (conf.getBoolean(NM_RESOURCE_PLUGINS_FAIL_FAST,
+        DEFAULT_NM_RESOURCE_PLUGINS_FAIL_FAST)) {
+      throw e;
+    }
+  }
 }
